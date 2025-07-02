@@ -135,6 +135,20 @@ class TestSelection:
 
         tm.assert_series_equal(result, expected)
 
+    def test_getitem_single_column_multiindex(self):
+        df = DataFrame(
+            {
+                ("a", 1): [1, 1, 2, 3],
+                ("a", 2): [10, 10, 20, 30],
+                ("b", 1): [100, 100, 200, 300],
+            }
+        )
+
+        result = df.groupby(("a", 1))[("a", 1)].mean()
+        expected = df.groupby(("a", 1))[[("a", 1)]].mean().squeeze()
+
+        tm.assert_series_equal(result, expected)
+
     @pytest.mark.parametrize(
         "func", [lambda x: x.sum(), lambda x: x.agg(lambda y: y.sum())]
     )
